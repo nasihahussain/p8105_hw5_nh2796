@@ -45,7 +45,8 @@ ggplot(data, aes(x = group_size, y = probability)) +
 
 # Problem 2
 
-# Initial Setup
+**Initial Setup**
+
 ```{r}
 n <- 30
 sigma <- 5
@@ -54,7 +55,7 @@ num_simulations <- 5000
 alpha <- 0.05
 ```
 
-# Simulation
+**Function**
 
 ```{r}
 simulate_power <- function(mu, n, sigma, num_simulations, alpha) {
@@ -93,7 +94,7 @@ power_summary <- sim_results %>%
   )
 ```
  
-# plots
+**plots**
 ```{r}
 power_summary %>%
   ggplot(aes(x = mu_true, y = power)) +
@@ -123,7 +124,8 @@ power_summary %>%
   
 # **Problem 3**
 
-# Data Import
+**Data Import**
+
 ```{r}
 homicide_data =
   read.csv("./homicide-data.csv")
