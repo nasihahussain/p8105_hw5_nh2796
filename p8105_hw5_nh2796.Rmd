@@ -45,6 +45,7 @@ ggplot(data, aes(x = group_size, y = probability)) +
 
 # Problem 2
 
+# Initial Setup
 ```{r}
 n <- 30
 sigma <- 5
@@ -53,6 +54,7 @@ num_simulations <- 5000
 alpha <- 0.05
 ```
 
+# Simulation
 
 ```{r}
 simulate_power <- function(mu, n, sigma, num_simulations, alpha) {
@@ -90,11 +92,38 @@ power_summary <- sim_results %>%
     avg_estimate_rejected = mean(estimate[null_rejected])
   )
 ```
+ 
+# plots
+```{r}
+power_summary %>%
+  ggplot(aes(x = mu_true, y = power)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Power vs Effect Size",
+    x = "True Mean (µ)",
+    y = "Power"
+  ) +
+  theme_minimal()
+```
 
+```{r}
+power_summary %>%
+  ggplot(aes(x = mu_true)) +
+  geom_line(aes(y = avg_estimate, color = "All Samples")) +
+  geom_line(aes(y = avg_estimate_rejected, color = "Null Rejected")) +
+  labs(
+    title = "Average Estimate of µ vs. true µ",
+    x = "True Mean (µ)",
+    y = "Average Estimate",
+    color = "Group"
+  ) +
+  theme_minimal()
+```
   
-# Problem 3
+# **Problem 3**
 
-
+# Data Import
 ```{r}
 homicide_data =
   read.csv("./homicide-data.csv")
