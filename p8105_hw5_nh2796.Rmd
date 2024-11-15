@@ -9,6 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(rvest)
+library(broom)
+library(purrr)
 ```
 
 # Problem 1
@@ -49,9 +51,10 @@ n <- 30
 sigma <- 5
 mu_values <- 1:6
 
-results <- list()
 
-for (mu in mu_values) {
+results <- list()
+  
+ for (mu in mu_values) {
   mu_results <- matrix(NA, nrow = 5000, ncol = 2)  
   for (i in 1:5000) {
     data <- rnorm(n, mean = mu, sd = sigma)
@@ -84,7 +87,8 @@ ggplot(data, aes(x = mu, y = power)) +
 ```
 
 ```{r}
-data_mu_hat <- data.frame(mu = mu_values, estimate = mean_mu_hat)
+data_mu_hat =
+  data.frame(mu = mu_values, estimate = mean_mu_hat)
 
 ggplot(data_mu_hat, aes(x = mu, y = estimate)) +
   geom_line() +
@@ -112,12 +116,42 @@ homicide_summary =
   summarise(total_homicides = n(), 
             unsolved_homicides = sum(disposition %in% c("Closed without arrest", "Open/No arrest")))
 ```
+# Prop test
 
 ```{r}
-baltimore_data = 
-  homicide_data %>% filter(city_state == "Baltimore, MD")
-prop_test <- prop.test(x = sum(baltimore_data$disposition %in% c("Closed without arrest", "Open/No arrest")), 
-                       n = nrow(baltimore_data))
-tidy_prop = broom::tidy(prop_test)
+
+baltimore_prop_test <- prop.test(
+  x = homicide_summary %>% filter(city_state == "Baltimore, MD") %>% pull(unsolved_homicides),
+  n = homicide_summary %>% filter(city_state == "Baltimore, MD") %>% pull(total_homicides)
+)
+
+baltimore_tidy <- broom::tidy(baltimore_prop_test) %>% 
+  select(estimate, conf.low, conf.high)
+```
+
+# proptest
+```{r}
+prop_test_new <- homicide_summary %>% 
+  mutate(
+    results_prop = map2(unsolved_homicides, total_homicides, ~prop.test(.x, .y))
+  ) %>% 
+  mutate(results_tidy = map(results_prop, broom::tidy)) %>% 
+  unnest(results_tidy) %>% 
+  select(city_state, estimate, conf.low, conf.high)
+```
+
+
+# Plot
+```{r}
+ggplot(prop_test_new, aes(x = reorder(city_state, estimate), y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  coord_flip() + 
+  labs(
+    x = "City", 
+    y = "Proportion of Unsolved Homicides",
+    title = "Proportion of Unsolved Homicides by City"
+  ) +
+  theme_minimal()
 ```
 
