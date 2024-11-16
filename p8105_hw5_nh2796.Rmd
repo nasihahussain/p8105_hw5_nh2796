@@ -124,6 +124,7 @@ power_summary %>%
   ) +
   theme_minimal()
 ```
+
 **Comments on average estimate vs true mean plot:** The average estimate of the sample mean across all of the samples is approximately equal to the true value of µ. If you look at the samples where the null hypothesis is rejected, the average estimate is larger than the true value of µ.This is possibly occuring because of selection bias since rejecting the null often needs sample means that are aren't 0. There might be more of a overrepresentation of more extreme values of the sample mean, leading to more bias in the average estimate.
 
 
@@ -135,7 +136,7 @@ power_summary %>%
 homicide_data =
   read.csv("./homicide-data.csv")
 ```
-Description of raw data: This data set has information on homicides from 50 large US cities. It includes information about each victim's first and last name, race/ethnicity, age, sex, the city that the homicide occured, the state that it occured, latitude and longitude, and the disposition of the case which indicates if the case was closed or if an arrest was made. 
+**Description of raw data:** This data set has information on homicides from 50 large US cities. It includes information about each victim's first and last name, race/ethnicity, age, sex, the city that the homicide occured, the state that it occured, latitude and longitude, and the disposition of the case which indicates if the case was closed or if an arrest was made. 
 
 ```{r}
 homicide_data = 
